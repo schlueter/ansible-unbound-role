@@ -1,0 +1,6 @@
+---
+- hosts: unbound
+  become: yes
+  gather_facts: yes
+  roles:
+    - "{{ playbook_dir  }}"

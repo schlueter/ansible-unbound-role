@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  author: Brandon Schlueter
+  description: Install Unbound
+  license: GPL V3
+  min_ansible_version: 2.2.0
+  categories: [ system ]
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 14.04+
+
+dependencies: []
