@@ -1,0 +1,30 @@
+---
+- name: add repository signing keys
+  apt_key:
+    id: "{{ item }}"
+    keyserver: keyserver.ubuntu.com
+  with_items:
+    - 6FBBE07B
+    - E5267A6C
+
+- name: add apt repositories
+  apt_repository: repo={{ item }}
+  with_items:
+    - ppa:ondrej/unbound
+    - ppa:ondrej/pkg-nlnetlabs
+
+- name: install package from apt
+  apt: name=unbound update_cache=yes cache_valid_time=1800
+
+- name: download root hints from internic
+  get_url:
+    url: https://www.internic.net/domain/named.cache
+    dest: /etc/unbound/root.hints
+
+- name: configure using template
+  template:
+    src: etc/unbound/unbound.conf.d/{{ item }}.conf.j2
+    dest: /etc/unbound/unbound.conf.d/{{ item }}.conf
+  with_items:
+    - root-hints
+  tags: unbound-conf
