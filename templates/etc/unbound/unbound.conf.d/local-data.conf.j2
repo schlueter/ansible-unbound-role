@@ -1,0 +1,4 @@
+server:
+{% for resource in unbound_local_data %}
+    local-data: "{{ resource.name }} {{ resource.type }} {{ resource.class }} {{ resource.ttl }} {{ resource.rdata | length }} {{ resource.rdata }}"
+{% endfor %}

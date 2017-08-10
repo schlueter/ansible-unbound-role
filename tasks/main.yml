@@ -27,4 +27,5 @@
     dest: /etc/unbound/unbound.conf.d/{{ item }}.conf
   with_items:
     - root-hints
+    - local-data
   tags: unbound-conf
