@@ -2,5 +2,13 @@
 - hosts: unbound
   become: yes
   gather_facts: yes
+  vars:
+    unbound_local_data:
+      -
+        name: example.org
+        type: A
+        class: IN
+        ttl: 300
+        rdata: 127.0.1.42
   roles:
     - "{{ playbook_dir  }}"

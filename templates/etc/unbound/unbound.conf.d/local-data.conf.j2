@@ -1,4 +1,4 @@
 server:
 {% for resource in unbound_local_data %}
-    local-data: "{{ resource.name }} {{ resource.type }} {{ resource.class }} {{ resource.ttl }} {{ resource.rdata | length }} {{ resource.rdata }}"
+    local-data: {{ "'" if resource.type == 'TXT' else '"' }}{{ resource.name }} {{ resource.type }} {{ resource.class }} {{ resource.ttl | default(0) }} {% if 'rdata' in resource %}{{ resource.rdata | length }} {{ resource.rdata }}{% endif %}{{ "'" if resource.type == 'TXT' else '"' }}
 {% endfor %}
