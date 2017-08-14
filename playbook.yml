@@ -5,10 +5,11 @@
   vars:
     unbound_local_data:
       -
-        name: example.org
+        name: example.com
         type: A
         class: IN
         ttl: 300
-        rdata: 127.0.1.42
+        ip_address: 127.0.1.42
+        ptr: yes
   roles:
     - "{{ playbook_dir  }}"

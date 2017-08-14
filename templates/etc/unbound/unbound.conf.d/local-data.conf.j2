@@ -1,4 +1,15 @@
 server:
 {% for resource in unbound_local_data %}
-    local-data: {{ "'" if resource.type == 'TXT' else '"' }}{{ resource.name }} {{ resource.type }} {{ resource.class }} {{ resource.ttl | default(0) }} {% if 'rdata' in resource %}{{ resource.rdata | length }} {{ resource.rdata }}{% endif %}{{ "'" if resource.type == 'TXT' else '"' }}
+    {% set class = resource.class -%}
+    {% set name = resource.name -%}
+    {% set quote = "'" if resource.type == 'TXT' else '"' -%}
+    {% set rdata = resource.rdata | default(resource.ip_address) -%}
+    {% set rdlength =  rdata | length if rdata else '' -%}
+    {% set ttl = resource.ttl | default(0) -%}
+    {% set type = resource.type -%}
+    {% set resource_record_string = [name, ttl, class, type, rdata, rdlength] | join(' ') | trim -%}
+    local-data: {{ quote }}{{ resource_record_string }}{{ quote }}
+    {% if resource.ptr | default(False) -%}
+    local-data-ptr: "{{ resource.ip_address }} {{ resource.name }}"
+    {% endif -%}
 {% endfor %}
