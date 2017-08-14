@@ -5,7 +5,10 @@
   vars:
     unbound_local_data:
       -
-        name: example.com
+        names:
+          - example.com
+          - example.org
+          - example.net
         type: A
         class: IN
         ttl: 300
