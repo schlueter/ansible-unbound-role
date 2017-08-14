@@ -1,16 +1,18 @@
 server:
 {% for resource in unbound_local_data %}
-  {% set class = resource.class -%}
-  {% set ip_address = resource.ip_address | default('') -%}
-  {% set quote = "'" if resource.type == 'TXT' else '"' -%}
-  {% set rdata = resource.rdata | default(ip_address) -%}
-  {% set rdlength =  rdata | length if rdata else '' -%}
-  {% set ttl = resource.ttl | default(0) -%}
-  {% set type = resource.type -%}
-  {% for name in resource.names | default([resource.name]) -%}
-  local-data: {{ quote }}{{ [name, ttl, class, type, rdata, rdlength] | join(' ') | trim }}{{ quote }}
-  {% if resource.ptr | default(False) -%}
+{% set class = resource.class | default('') %}
+{% set ip_address = resource.ip_address | default('') %}
+{% set type = resource.type | default('') %}
+{% set rdata = resource.rdata | default(ip_address) %}
+{% set ttl = resource.ttl | default('') %}
+{% set rdlength =  rdata | length if rdata else '' %}
+{% set quote = "'" if type == 'TXT' else '"' %}
+{% for name in resource.names | default(['']) %}
+{% set compiled_resource_record = [name, ttl or '0', class, type, rdata, rdlength] | join(' ') | trim %}
+{% set resource_record = resource.record | default(compiled_resource_record) %}
+  local-data: {{ quote }}{{ resource_record }}{{ quote }}
+{% if resource.ptr | default(False) %}
   local-data-ptr: "{{ ip_address }} {{ name }}"
-  {% endif -%}
-  {% endfor %}
+{% endif %}
+{% endfor %}
 {% endfor %}
