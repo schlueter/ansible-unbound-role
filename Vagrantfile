@@ -8,7 +8,7 @@ Vagrant.configure(2) do |config|
       machine.vm.network "private_network", ip: "192.168.77.#{20+machine_id}"
 
       config.vm.provision :shell,
-        inline: 'sudo apt-get install -y python-minimal'
+        inline: 'if ! which python >/dev/null; then echo python binary not found, installing...; sudo apt-get install -qq python-minimal; fi'
 
       if machine_id == N then
         config.vm.provision :ansible,
