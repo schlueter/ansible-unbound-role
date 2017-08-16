@@ -17,6 +17,12 @@
   apt: name=unbound update_cache=yes cache_valid_time=1800
   notify: restart unbound
 
+- name: set correct user/group for pid
+  file:
+    path: /run/unbound.pid
+    owner: root
+    group: root
+
 - name: download root hints from internic
   notify: restart unbound
   get_url:
