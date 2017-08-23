@@ -1,16 +1,8 @@
 server:
 {% for resource in unbound_local_data %}
-{% set class = resource.class | default('') %}
-{% set ip_address = resource.ip_address | default('') %}
-{% set name = resource.name %}
-{% set type = resource.type | default('') %}{# Must go before quote #}
-{% set quote = "'" if type == 'TXT' else '"' %}
-{% set rdata = resource.rdata | default(ip_address) %}
-{% set rdlength =  rdata | length if rdata else '' %}
-{% set ttl = resource.ttl | default('') %}
-{% set resource_record = [name, ttl or '0', class, type, rdata, rdlength] | join(' ') | trim %}
-  local-data: {{ quote }}{{ resource_record }}{{ quote }}
+{% set quote = "'" if resource.type == 'TXT' else '"' %}
+  local-data: {{ quote }}{{ resource | dns_resource_record }}{{ quote }}
 {% if resource.ptr | default(False) %}
-  local-data-ptr: "{{ ip_address }} {{ name }}"
+  local-data-ptr: "{{ resource.value | default(resource.address) }} {{ resource.name }}"
 {% endif %}
 {% endfor %}
