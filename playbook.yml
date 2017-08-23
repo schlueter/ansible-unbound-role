@@ -19,7 +19,9 @@
       ttl: 300
       value: 127.0.1.42
       ptr: yes
-    localhost_A_records: "{{ local_hostnames | map('merge', localhost_A_record_template) | list }}"
+
+    localhost_A_records: "{{ local_hostnames | map('merge', localhost_A_record_template) | list
+                           + local_domains | map('merge', localhost_A_record_template) | list }}"
 
     localhost_NS_record_template:
       type: NS
@@ -49,6 +51,7 @@
         address: 127.0.0.1
 
     unbound_local_data: "{{ localhost_NS_records + localhost_A_records + localhost_SOA_records + additional_records }}"
+    unbound_local_zones: "{{ local_domains }}"
 
   roles:
     - "{{ playbook_dir  }}"
