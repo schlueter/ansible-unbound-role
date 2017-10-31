@@ -15,7 +15,7 @@
 
 - name: install package from apt
   apt: name=unbound update_cache=yes cache_valid_time=1800
-  notify: restart unbound
+  register: unbound_installed
 
 - name: set correct user/group for pid
   file:
@@ -24,13 +24,12 @@
     group: root
 
 - name: download root hints from internic
-  notify: restart unbound
   get_url:
     url: https://www.internic.net/domain/named.cache
     dest: /etc/unbound/root.hints
+  register: unbound_root_hints
 
 - name: configure using template
-  notify: restart unbound
   template:
     src: etc/unbound/unbound.conf.d/{{ item }}.conf.j2
     dest: /etc/unbound/unbound.conf.d/{{ item }}.conf
@@ -38,3 +37,11 @@
     - root-hints
     - local-data
   tags: unbound-conf
+  register: unbound_configure
+
+- name: restart unbound if necessary
+  service: name=unbound state=restarted
+  when: unbound_configure | changed or unbound_installed | changed or unbound_root_hints | changed
+
+- name: ensure unbound is running
+  service: name=unbound state=started
