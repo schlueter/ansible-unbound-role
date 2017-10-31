@@ -1,57 +1,8 @@
 ---
-- hosts: unbound
+- hosts: "{{ playbook_dir | basename }}"
   become: yes
   gather_facts: yes
-  vars:
-    local_hostnames:
-      - name: example.com
-      - name: example.org
-      - name: example.net
-
-    local_domains:
-      - name: domain.example.com
-      - name: domain.example.org
-      - name: domain.example.net
-
-    localhost_A_record_template:
-      type: A
-      class: IN
-      ttl: 300
-      value: 127.0.1.42
-      ptr: yes
-
-    localhost_A_records: "{{ local_hostnames | map('merge', localhost_A_record_template) | list
-                           + local_domains | map('merge', localhost_A_record_template) | list }}"
-
-    localhost_NS_record_template:
-      type: NS
-      class: IN
-      ttl: 86400
-      nshost: localhost
-    localhost_NS_records: "{{ local_domains | map('merge', localhost_NS_record_template) | list }}"
-
-    localhost_SOA_record_template:
-      type: SOA
-      class: IN
-      ttl: 86400
-      serial: 1
-      refresh: 86400
-      retry: 600
-      expire: 86400
-      minimum: 60
-      nshost: localhost
-    localhost_SOA_records: "{{ local_domains | map('merge', localhost_SOA_record_template) | list }}"
-
-    additional_records:
-      -
-        name: a.ns.220.10.10.in-addr.arpa
-        type: A
-        class: IN
-        ttl: 86400
-        address: 127.0.0.1
-
-    unbound_local_data: "{{ localhost_NS_records + localhost_A_records + localhost_SOA_records + additional_records }}"
-    unbound_local_zones: "{{ local_domains }}"
-
+  vars_files:
+    - [ test-vars/custom.yml, test-vars/default.yml ]
   roles:
-    - "{{ playbook_dir  }}"
+    - ../{{ playbook_dir | basename }}
