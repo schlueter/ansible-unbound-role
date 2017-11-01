@@ -18,6 +18,12 @@
   register: unbound_installed
 
 - name: set correct user/group for pid
+  copy:
+    content: ''
+    dest: /run/unbound.pid
+    force: no
+
+- name: set correct user/group for pid
   file:
     path: /run/unbound.pid
     owner: root
