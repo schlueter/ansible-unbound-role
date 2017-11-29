@@ -1,0 +1,12 @@
+server:
+{% for zone in unbound_local_zones %}
+  local-zone: "{{ zone.name }}" {{ zone.type | default("redirect") }}
+{% endfor %}
+
+{% for resource in unbound_local_data %}
+{% set quote = "'" if resource.type == 'TXT' else '"' %}
+  local-data: {{ quote }}{{ resource | dns_resource_record }}{{ quote }}
+{% if resource.ptr | default(False) %}
+  local-data-ptr: "{{ resource.value | default(resource.address) }} {{ resource.name }}"
+{% endif %}
+{% endfor %}
