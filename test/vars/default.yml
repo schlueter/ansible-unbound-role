@@ -48,3 +48,5 @@ additional_records:
 
 unbound_local_data: "{{ localhost_NS_records + localhost_A_records + localhost_SOA_records + additional_records }}"
 unbound_local_zones: "{{ local_domains }}"
+
+unbound_custom_configuration_files: "{{ role_path + '/test/templates/etc/unbound/unbound.conf.d/example.conf.j2' }}"

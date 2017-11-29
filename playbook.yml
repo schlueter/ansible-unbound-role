@@ -3,6 +3,6 @@
   become: yes
   gather_facts: yes
   vars_files:
-    - [ test-vars/custom.yml, test-vars/default.yml ]
+    - test/vars/default.yml
   roles:
     - ../{{ playbook_dir | basename }}
