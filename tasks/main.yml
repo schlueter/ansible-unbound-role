@@ -29,7 +29,7 @@
   register: unbound_installed
   when: ansible_lsb.codename == 'trusty'
 
-- name: set correct user/group for pid
+- name: ensure pid file exists
   copy:
     content: ''
     dest: /run/unbound.pid
@@ -47,8 +47,8 @@
     dest: /etc/unbound/root.hints
   register: unbound_root_hints
 
-- name: configure root-hints using template
-  template:
+- name: install configuration file to use root-hints
+  copy:
     src: etc/unbound/unbound.conf.d/root-hints.conf.j2
     dest: /etc/unbound/unbound.conf.d/root-hints.conf
   notify: restart unbound
