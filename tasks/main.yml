@@ -14,8 +14,20 @@
     - ppa:ondrej/pkg-nlnetlabs
 
 - name: install package from apt
-  apt: name=unbound update_cache=yes cache_valid_time=1800
+  apt: 
+    name: unbound=1.5.8-1ubuntu1
+    update_cache: yes
+    cache_valid_time: 1800
   register: unbound_installed
+  when: inventory_hostname == 'bento-ubuntu-16-04'
+
+- name: install package from apt
+  apt: 
+    name: unbound
+    update_cache: yes
+    cache_valid_time: 1800
+  register: unbound_installed
+  when: inventory_hostname == 'bento-ubuntu-14-04'
 
 - name: ensure pid file exists
   copy:
