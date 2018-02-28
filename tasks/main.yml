@@ -13,21 +13,21 @@
     - ppa:ondrej/unbound
     - ppa:ondrej/pkg-nlnetlabs
 
-- name: install package from apt
+- name: install package from apt (xenial)
   apt: 
     name: unbound=1.5.8-1ubuntu1
     update_cache: yes
     cache_valid_time: 1800
   register: unbound_installed
-  when: inventory_hostname == 'bento-ubuntu-16-04'
+  when: ansible_lsb.codename == 'xenial'
 
-- name: install package from apt
+- name: install package from apt (trusty)
   apt: 
     name: unbound
     update_cache: yes
     cache_valid_time: 1800
   register: unbound_installed
-  when: inventory_hostname == 'bento-ubuntu-14-04'
+  when: ansible_lsb.codename == 'trusty'
 
 - name: set correct user/group for pid
   copy:
