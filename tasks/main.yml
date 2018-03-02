@@ -1,4 +1,14 @@
 ---
+- name: Load a variable file based on the OS type, or a default if not found
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution_release }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - default.yml
+      paths: ../vars
+
 - name: add repository signing keys
   apt_key:
     id: "{{ item }}"
@@ -14,20 +24,11 @@
     - ppa:ondrej/pkg-nlnetlabs
 
 - name: install package from apt (xenial)
-  apt: 
-    name: unbound=1.5.8-1ubuntu1
+  apt:
+    name: "{{ unbound_package }}"
     update_cache: yes
     cache_valid_time: 1800
   register: unbound_installed
-  when: ansible_lsb.codename == 'xenial'
-
-- name: install package from apt (trusty)
-  apt: 
-    name: unbound
-    update_cache: yes
-    cache_valid_time: 1800
-  register: unbound_installed
-  when: ansible_lsb.codename == 'trusty'
 
 - name: ensure pid file exists
   copy:
