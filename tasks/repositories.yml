@@ -1,0 +1,16 @@
+---
+- name: add repository signing keys
+  apt_key:
+    id: "{{ item }}"
+    keyserver: keyserver.ubuntu.com
+  with_items:
+    - 6FBBE07B
+    - E5267A6C
+
+- name: add apt repositories
+  apt_repository: repo={{ item }}
+  with_items:
+    - ppa:ondrej/unbound
+    - ppa:ondrej/pkg-nlnetlabs
+
+

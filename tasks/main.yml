@@ -1,33 +1,18 @@
 ---
-- name: add repository signing keys
-  apt_key:
-    id: "{{ item }}"
-    keyserver: keyserver.ubuntu.com
-  with_items:
-    - 6FBBE07B
-    - E5267A6C
+- include: repositories.yml
+  when: ansible_lsb.codename in ['trusty', 'xenial']
 
-- name: add apt repositories
-  apt_repository: repo={{ item }}
-  with_items:
-    - ppa:ondrej/unbound
-    - ppa:ondrej/pkg-nlnetlabs
-
-- name: install package from apt (xenial)
-  apt: 
-    name: unbound=1.5.8-1ubuntu1
-    update_cache: yes
-    cache_valid_time: 1800
-  register: unbound_installed
+- name: Hold back version of unbound on xenial because of a package bug
+  set_fact:
+    unbound_apt_package: unbound=1.5.8-1ubuntu1
   when: ansible_lsb.codename == 'xenial'
 
 - name: install package from apt (trusty)
-  apt: 
-    name: unbound
+  apt:
+    name: "{{ unbound_apt_package }}"
     update_cache: yes
     cache_valid_time: 1800
   register: unbound_installed
-  when: ansible_lsb.codename == 'trusty'
 
 - name: ensure pid file exists
   copy:
