@@ -1,5 +1,9 @@
 Vagrant.configure(2) do |config|
-    machines = %w(bento/ubuntu-16.04 bento/ubuntu-14.04)
+    machines = %w(
+        bento/ubuntu-18.04
+        bento/ubuntu-16.04
+        bento/ubuntu-14.04
+    )
     machine_names = machines.map do |box|
         box.gsub(/(\/|\.)/, '-')
     end
